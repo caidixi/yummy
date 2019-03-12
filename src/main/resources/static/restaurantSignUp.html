@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Yummy</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
+        <!-- 引入 Bootstrap -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <!-- HTML5 Shiv 和 Respond.js 用于让 IE8 支持 HTML5元素和媒体查询 -->
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    </head>
+    <body>
+        <div>
+            <h1 class="text-center">Yummy餐厅注册</h1>
+            <p class="text-center">请输入注册信息</p>
+            <div class="col-md-offset-4" style="padding:100px 100px 10px ;">
+                <form class="login-form" role="form">
+                    <label>餐厅名</label>
+                    <div class="input-group" style="width: 300px">
+                        <input id="name" type="text" class="form-control" title="name">
+                    </div>
+                    <label>邮箱</label>
+                    <div class="input-group" style="width: 300px">
+                        <input id="email" type="email" class="form-control" title="email">
+                    </div>
+                    <label>电话</label>
+                    <div class="input-group" style="width: 300px">
+                        <input id="phone" type="text" class="form-control" title="phone">
+                    </div>
+                    <label>地址</label>
+                    <div class="input-group" style="width: 300px">
+                        <input id="address" type="text" class="form-control" title="address">
+                    </div>
+                    <label>餐厅银行账户</label>
+                    <div class="input-group" style="width: 300px">
+                        <input id="accountId" type="text" class="form-control" title="accountId">
+                    </div>
+                    <label>餐厅类型</label>
+                    <div class="form-group" style="width: 300px">
+                        <select id="type" class="form-control" title="type">
+                            <option>简餐便当</option>
+                            <option>小吃</option>
+                            <option>西餐</option>
+                            <option>地方菜系</option>
+                            <option>面食粥点</option>
+                        </select>
+                    </div>
+                    <label>申请说明</label>
+                    <div class="input-group" style="width: 300px">
+                        <input id="announcement" type="text" class="form-control" title="announcement">
+                    </div>
+                    <br>
+                </form>
+                <div>
+                    <button id="signUpButton" class="btn btn-default" type="button">注册</button>
+                </div>
+            </div>
+            <br>
+            <p class="text-center" id="hasAccount">已经注册？</p>
+        </div>
+        <script src="https://code.jquery.com/jquery.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/myJS/restSignUp.js"></script>
+    </body>
+</html>
