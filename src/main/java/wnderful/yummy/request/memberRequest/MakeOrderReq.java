@@ -5,12 +5,23 @@ import wnderful.yummy.entity.FoodOrder;
 public class MakeOrderReq {
     private String uid;
     private String rid;
-    private String address;
+    private String addressId;
     private int numOfDinner;
     private String remark;
+    private double totalPrice;
     private FoodOrder[] foods;
 
     public MakeOrderReq() {
+    }
+
+    public MakeOrderReq(String uid, String rid, String addressId, int numOfDinner, String remark, double totalPrice, FoodOrder[] foods) {
+        this.uid = uid;
+        this.rid = rid;
+        this.addressId = addressId;
+        this.numOfDinner = numOfDinner;
+        this.remark = remark;
+        this.totalPrice = totalPrice;
+        this.foods = foods;
     }
 
     public String getUid() {
@@ -29,14 +40,6 @@ public class MakeOrderReq {
         this.rid = rid;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public int getNumOfDinner() {
         return numOfDinner;
     }
@@ -51,6 +54,22 @@ public class MakeOrderReq {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(String addressId) {
+        this.addressId = addressId;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public FoodOrder[] getFoods() {

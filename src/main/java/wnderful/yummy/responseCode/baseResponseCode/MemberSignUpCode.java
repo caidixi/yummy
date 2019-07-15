@@ -3,7 +3,8 @@ package wnderful.yummy.responseCode.baseResponseCode;
 public enum MemberSignUpCode {
     SUCCESS(0,"会员注册成功"),
     EMPTY(1,"输入信息不得为空"),
-    EXIST(2,"账号已存在");
+    EXIST(2,"账号已存在"),
+    REPEAT(4,"用户名重复");
     private int code;
     private String message;
 

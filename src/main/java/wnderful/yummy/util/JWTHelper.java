@@ -15,14 +15,13 @@ import java.util.Map;
 public class JWTHelper {
     private final String login_secret = "secret";
 
-    public String createToken(String username,String password,String type)throws UnsupportedEncodingException {
+    public String createToken(String username,String type)throws UnsupportedEncodingException {
         Map<String, Object> map = new HashMap<>();
         map.put("alg", "HS256");
         map.put("typ", "JWT");
         return JWT.create()
                 .withHeader(map)
                 .withClaim("username", username)
-                .withClaim("password",password)
                 .withClaim("type", type)
                 .sign(Algorithm.HMAC256(login_secret));
     }
@@ -34,8 +33,7 @@ public class JWTHelper {
         Map<String, Claim> claims = jwt.getClaims();
         String[] result = new String[3];
         result[0] = claims.get("username").asString();
-        result[1] = claims.get("password").asString();
-        result[2] = claims.get("type").asString();
+        result[1] = claims.get("type").asString();
         return result;
     }
 }

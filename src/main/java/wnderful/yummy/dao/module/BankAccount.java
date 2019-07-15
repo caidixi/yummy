@@ -22,6 +22,10 @@ public class BankAccount {
         this.password = password;
     }
 
+    public String getAccountId() {
+        return accountId;
+    }
+
     public double getBalance() {
         return balance;
     }

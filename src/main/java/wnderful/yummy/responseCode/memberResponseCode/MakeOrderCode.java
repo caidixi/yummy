@@ -7,7 +7,8 @@ public enum MakeOrderCode {
     RESTNOTEXIST(3,"餐厅不存在"),
     EMPTYADDRESS(4,"地址不得为空"),
     FOODNOTEXIST(5,"部分食物不存在"),
-    FULL(6,"部分食物已售罄");
+    FULL(6,"部分食物已售罄"),
+    MONEYERROR(7,"价格发生变化");
     private int code;
     private String message;
 

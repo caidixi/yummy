@@ -14,10 +14,14 @@ public class FoodStateDataServiceImpl implements FoodStateDataService {
     @Autowired
     public FoodStateDataServiceImpl(FoodStateRepository foodStateRepository) {
         this.foodStateRepository = foodStateRepository;
+    }
+
+    @Override
+    public void initialize() {
         if(foodStateRepository.findAll().size()==0){
-            foodStateRepository.save(new FoodState(FoodStateName.CANCEL.getStateName()));
-            foodStateRepository.save(new FoodState(FoodStateName.EMPTY.getStateName()));
-            foodStateRepository.save(new FoodState(FoodStateName.NORMAL.getStateName()));
+            foodStateRepository.saveAndFlush(new FoodState(FoodStateName.CANCEL.getStateName()));
+            foodStateRepository.saveAndFlush(new FoodState(FoodStateName.EMPTY.getStateName()));
+            foodStateRepository.saveAndFlush(new FoodState(FoodStateName.NORMAL.getStateName()));
         }
     }
 

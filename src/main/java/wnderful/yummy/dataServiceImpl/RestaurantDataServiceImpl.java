@@ -1,21 +1,18 @@
 package wnderful.yummy.dataServiceImpl;
 
-import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wnderful.yummy.dao.module.*;
 import wnderful.yummy.dao.repository.*;
 import wnderful.yummy.dataService.RestaurantDataService;
 import wnderful.yummy.entity.FullReduction;
-import wnderful.yummy.entity.entityInModule.FullReductionList;
+//import wnderful.yummy.entity.entityInModule.FullReductionList;
+//import com.alibaba.fastjson.JSON;
 import wnderful.yummy.entity.entityInModule.RestaurantStateName;
 import wnderful.yummy.entity.voEntity.RestDetail;
 import wnderful.yummy.entity.voEntity.managerVoEntity.ModApplication;
 import wnderful.yummy.entity.voEntity.managerVoEntity.SignUpApplication;
-import wnderful.yummy.util.EmailHelper;
-import wnderful.yummy.util.LocationHelper;
-import wnderful.yummy.util.PasswordHelper;
-import wnderful.yummy.util.SHAHelper;
+import wnderful.yummy.util.*;
 import wnderful.yummy.vo.managerVo.GetApplyListVo;
 import wnderful.yummy.vo.managerVo.GetModifyListVo;
 import wnderful.yummy.vo.memberVo.GetRestListVo;
@@ -28,19 +25,17 @@ import java.util.UUID;
 public class RestaurantDataServiceImpl implements RestaurantDataService {
     private RestaurantRepository restaurantRepository;
     private RestaurantTypeDataServiceImpl restaurantTypeDataService;
-    private ModifyApplicationRepository modifyApplicationRepository;
-    private MemberRepository memberRepository;
     private RestaurantStateDataServiceImpl restaurantStateDataService;
-    private EmailHelper emailHelper;
+    private ModifyApplicationRepository modifyApplicationRepository;
+    private SafeEmailHelper emailHelper;
 
     @Autowired
     public RestaurantDataServiceImpl(RestaurantRepository restaurantRepository, RestaurantTypeDataServiceImpl restaurantTypeDataService,
-                                     ModifyApplicationRepository modifyApplicationRepository, MemberRepository memberRepository,
-                                     RestaurantStateDataServiceImpl restaurantStateDataService, EmailHelper emailHelper) {
+                                     ModifyApplicationRepository modifyApplicationRepository,
+                                     RestaurantStateDataServiceImpl restaurantStateDataService, SafeEmailHelper emailHelper) {
         this.restaurantRepository = restaurantRepository;
         this.restaurantTypeDataService = restaurantTypeDataService;
         this.modifyApplicationRepository = modifyApplicationRepository;
-        this.memberRepository = memberRepository;
         this.restaurantStateDataService = restaurantStateDataService;
         this.emailHelper = emailHelper;
     }
@@ -165,10 +160,11 @@ public class RestaurantDataServiceImpl implements RestaurantDataService {
     }
 
     @Override
-    public void newSignUpApplication(String name, String email, String phone, String address, String accountId, String type, String announcement) {
+    public void newSignUpApplication(String name, String email, String phone, String address,double lng,double lat,String city, String accountId, String type, String announcement,String picture) {
         Restaurant restaurant = restaurantRepository.findRestaurantByEmail(email);
         RestaurantState restaurantState = restaurantStateDataService.getExamineRestState();
         RestaurantType restaurantType = restaurantTypeDataService.getByName(type);
+        assert restaurantType!=null;
         if(restaurant != null){
             restaurant.setName(name);
             restaurant.setPhone(phone);
@@ -177,10 +173,14 @@ public class RestaurantDataServiceImpl implements RestaurantDataService {
             restaurant.setRestaurantType(restaurantType);
             restaurant.setAnnouncement(announcement);
             restaurant.setRestaurantState(restaurantState);
+            restaurant.setLng(lng);
+            restaurant.setLat(lat);
+            restaurant.setCity(city);
+            restaurant.setPicture(picture);
             restaurantRepository.save(restaurant);
         }else {
             String rid = createRestaurantId();
-            Restaurant newRestaurant = new Restaurant(rid, name, email, phone, address, announcement, "", accountId, restaurantType, restaurantState);
+            Restaurant newRestaurant = new Restaurant(rid, name, email, phone, address,lng,lat,city,announcement, "", accountId,picture, restaurantType, restaurantState);
             restaurantRepository.save(newRestaurant);
         }
     }
@@ -198,9 +198,9 @@ public class RestaurantDataServiceImpl implements RestaurantDataService {
         Restaurant restaurant = restaurantRepository.findRestaurantByRid(rid);
         assert restaurant != null && restaurantIsNormal(restaurant);
         restaurant.setTotalDiscount(totalDiscount);
-        FullReductionList list = new FullReductionList(fullReductions);
-        String fullReduction = JSON.toJSONString(list);
-        restaurant.setFullReduction(fullReduction);
+        //FullReductionList list = new FullReductionList(fullReductions);
+        //String fullReduction = JSON.toJSONString(list);
+        //restaurant.setFullReduction(fullReduction);
         restaurantRepository.save(restaurant);
     }
 
@@ -212,21 +212,19 @@ public class RestaurantDataServiceImpl implements RestaurantDataService {
     }
 
     @Override
-    public GetRestListVo getRestaurantList(String uid) {
-        Member member = memberRepository.findMemberByUid(Long.parseLong(uid));
-        assert member != null;
-        Address address = member.getAddress();
-        String location = address.getLocationInfo1();
+    public GetRestListVo getRestaurantList(String type,String city,double lng,double lat) {
         RestaurantState restaurantState = restaurantStateDataService.getNormalRestState();
-        List<Restaurant> restaurants = restaurantRepository.findByRestaurantState(restaurantState);
-        RestDetail[] restDetails = new RestDetail[restaurants.size()];
-        for (int i = 0; i < restaurants.size(); i++) {
-            Restaurant restaurant = restaurants.get(i);
-            int distance = LocationHelper.getDistance(location, restaurant.getAddress());
-            int arriveTime = LocationHelper.getArriveTime(distance);
-            RestDetail restDetail = new RestDetail(restaurant.getName(), restaurant.getRid(), restaurant.getPicture(), restaurant.getRestaurantType().getName(), distance, arriveTime);
-            restDetails[i] = restDetail;
-        }
+        RestaurantType restaurantType = restaurantTypeDataService.getByName(type);
+        List<Restaurant> restaurants = restaurantRepository.findByRestaurantStateAndCityContainingAndRestaurantType(restaurantState,city,restaurantType);
+        RestDetail[] restDetails = getRestDetail(restaurants,lng,lat);
+        return new GetRestListVo(restDetails);
+    }
+
+    @Override
+    public GetRestListVo searchRestaurantByName(String name, String city, double lng, double lat) {
+        RestaurantState restaurantState = restaurantStateDataService.getNormalRestState();
+        List<Restaurant> restaurants = restaurantRepository.findByRestaurantStateAndCityContainingAndNameContaining(restaurantState,city,name);
+        RestDetail[] restDetails = getRestDetail(restaurants,lng,lat);
         return new GetRestListVo(restDetails);
     }
 
@@ -304,5 +302,17 @@ public class RestaurantDataServiceImpl implements RestaurantDataService {
         RestaurantState restaurantState = restaurant.getRestaurantState();
         String stateName = restaurantState.getName();
         return stateName.equals(RestaurantStateName.EXAMINE.getStateName());
+    }
+
+    private RestDetail[] getRestDetail(List<Restaurant> restaurants,double lng,double lat){
+        RestDetail[] restDetails = new RestDetail[restaurants.size()];
+        for (int i = 0; i < restaurants.size(); i++) {
+            Restaurant restaurant = restaurants.get(i);
+            double distance = LocationHelper.getDistance(restaurant.getLng(), restaurant.getLat(),lng,lat);
+            int arriveTime = LocationHelper.getArriveTime(distance);
+            RestDetail restDetail = new RestDetail(restaurant.getName(),restaurant.getRid(),restaurant.getRestaurantPoint(),restaurant.getPicture(),restaurant.getStartingPrice(),restaurant.getDeliverPrice(),arriveTime);
+            restDetails[i] = restDetail;
+        }
+        return restDetails;
     }
 }

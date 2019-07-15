@@ -13,10 +13,6 @@ public class AccountDataServiceImpl implements AccountDataService {
     @Autowired
     public AccountDataServiceImpl(BankAccountRepository bankAccountRepository) {
         this.bankAccountRepository = bankAccountRepository;
-        if(bankAccountRepository.findAll().size()==0){
-            bankAccountRepository.save(new BankAccount("0000000000000000",10000,"666666"));
-            bankAccountRepository.save(new BankAccount("1111111111111111",10000,"888888"));
-        }
     }
 
     @Override

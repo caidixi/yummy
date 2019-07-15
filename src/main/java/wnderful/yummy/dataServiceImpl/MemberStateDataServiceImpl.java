@@ -14,10 +14,6 @@ public class MemberStateDataServiceImpl implements MemberStateDataService {
     @Autowired
     public MemberStateDataServiceImpl(MemberStateRepository memberStateRepository) {
         this.memberStateRepository = memberStateRepository;
-        if(memberStateRepository.findAll().size()==0){
-            memberStateRepository.save(new MemberState(MemberStateName.NORMAL.getStateName()));
-            memberStateRepository.save(new MemberState(MemberStateName.CANCEL.getStateName()));
-        }
     }
 
     @Override

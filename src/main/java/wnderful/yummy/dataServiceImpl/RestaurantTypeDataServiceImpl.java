@@ -17,11 +17,12 @@ public class RestaurantTypeDataServiceImpl implements RestaurantTypeDataService 
     public RestaurantTypeDataServiceImpl(RestaurantTypeRepository restaurantTypeRepository) {
         this.restaurantTypeRepository = restaurantTypeRepository;
         if(restaurantTypeRepository.findAll().size()==0){
-            restaurantTypeRepository.save(new RestaurantType(RestaurantTypeName.FASTFOOD.getStateName()));
-            restaurantTypeRepository.save(new RestaurantType(RestaurantTypeName.SNACK.getStateName()));
-            restaurantTypeRepository.save(new RestaurantType(RestaurantTypeName.WESTERN.getStateName()));
-            restaurantTypeRepository.save(new RestaurantType(RestaurantTypeName.REGIONAL.getStateName()));
-            restaurantTypeRepository.save(new RestaurantType(RestaurantTypeName.NOODLE.getStateName()));
+            restaurantTypeRepository.saveAndFlush(new RestaurantType(RestaurantTypeName.FASTFOOD.getStateName()));
+            restaurantTypeRepository.saveAndFlush(new RestaurantType(RestaurantTypeName.SNACK.getStateName()));
+            restaurantTypeRepository.saveAndFlush(new RestaurantType(RestaurantTypeName.MAIN.getStateName()));
+            restaurantTypeRepository.saveAndFlush(new RestaurantType(RestaurantTypeName.SUPERMARKET.getStateName()));
+            restaurantTypeRepository.saveAndFlush(new RestaurantType(RestaurantTypeName.FRUIT.getStateName()));
+            restaurantTypeRepository.saveAndFlush(new RestaurantType(RestaurantTypeName.TEA.getStateName()));
         }
     }
 
@@ -36,18 +37,23 @@ public class RestaurantTypeDataServiceImpl implements RestaurantTypeDataService 
     }
 
     @Override
-    public RestaurantType getWesternType() {
-        return restaurantTypeRepository.findByName(RestaurantTypeName.WESTERN.getStateName());
+    public RestaurantType getMainType() {
+        return restaurantTypeRepository.findByName(RestaurantTypeName.MAIN.getStateName());
     }
 
     @Override
-    public RestaurantType getRegionalType() {
-        return restaurantTypeRepository.findByName(RestaurantTypeName.REGIONAL.getStateName());
+    public RestaurantType getSuperMarketType() {
+        return restaurantTypeRepository.findByName(RestaurantTypeName.SUPERMARKET.getStateName());
     }
 
     @Override
-    public RestaurantType getNoodleType() {
-        return restaurantTypeRepository.findByName(RestaurantTypeName.NOODLE.getStateName());
+    public RestaurantType getFruitType() {
+        return restaurantTypeRepository.findByName(RestaurantTypeName.FRUIT.getStateName());
+    }
+
+    @Override
+    public RestaurantType getTeaType() {
+        return restaurantTypeRepository.findByName(RestaurantTypeName.TEA.getStateName());
     }
 
     @Override

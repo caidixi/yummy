@@ -1,7 +1,7 @@
 package wnderful.yummy.response.ManagerResponse;
 
 import wnderful.yummy.response.CommonResponse;
-import wnderful.yummy.responseCode.ManagerResponseCode.GetModifyListCode;
+import wnderful.yummy.responseCode.managerResponseCode.GetModifyListCode;
 import wnderful.yummy.vo.managerVo.GetModifyListVo;
 
 public class GetModifyListRes extends CommonResponse {

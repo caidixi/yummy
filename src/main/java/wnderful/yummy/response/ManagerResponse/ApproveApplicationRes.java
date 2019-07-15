@@ -1,7 +1,7 @@
 package wnderful.yummy.response.ManagerResponse;
 
 import wnderful.yummy.response.Response;
-import wnderful.yummy.responseCode.ManagerResponseCode.ApproveApplicationCode;
+import wnderful.yummy.responseCode.managerResponseCode.ApproveApplicationCode;
 
 public class ApproveApplicationRes extends Response {
 

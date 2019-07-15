@@ -9,13 +9,14 @@ import wnderful.yummy.dao.module.Restaurant;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order,Long> {
-    Order findOidByTime(String time);
 
     Order findByOidAndOrderState(Long oid, OrderState orderState);
 
     Order findByOid(Long oid);
 
     List<Order> findByOrderState(OrderState orderState);
+
+    List<Order> findByMemberOrderByOrderTimeDesc(Member member);
 
     List<Order> findByOrderStateAndMember(OrderState orderState, Member member);
 

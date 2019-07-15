@@ -1,35 +1,51 @@
 package wnderful.yummy.vo.memberVo;
 
-import com.alibaba.fastjson.JSON;
-import wnderful.yummy.entity.entityInModule.OrderTime;
 import wnderful.yummy.entity.voEntity.FoodInfo;
 
 public class GetOrderDetailVo {
-    private String oid;
-    private String state;
-    private String time;
     private String rid;
-    private double totalPrice;
+    private String restaurantName;
+    private String restaurantPicture;
+    private String restaurantPhone;
+
+    private String oid;
+    private String time;
+    private double price;
     private double packagePrice;
     private double deliveryPrice;
+
+    private String state;
+    private String remark;
+    private int numberOfDinner;
+    private String probablyArriveTime;
+
+    private String name;
+    private String phone;
+    private String location;
+    private String detailAddress;
     private FoodInfo[] foods;
 
-    public GetOrderDetailVo(String oid, String state,  String time, String rid, double totalPrice,
-                            double packagePrice, double deliveryPrice, FoodInfo[] foods) {
-        this.oid = oid;
-        this.state = state;
+    public GetOrderDetailVo(String rid, String restaurantName, String restaurantPicture, String restaurantPhone, String oid,
+                            String time, double price, double packagePrice, double deliveryPrice, String state, String remark,int numberOfDinner,
+                            String probablyArriveTime, String name, String phone, String location, String detailAddress, FoodInfo[] foods) {
         this.rid = rid;
-        this.totalPrice = totalPrice;
+        this.restaurantName = restaurantName;
+        this.restaurantPicture = restaurantPicture;
+        this.restaurantPhone = restaurantPhone;
+        this.oid = oid;
+        this.time = time;
+        this.price = price;
         this.packagePrice = packagePrice;
         this.deliveryPrice = deliveryPrice;
+        this.state = state;
+        this.remark = remark;
+        this.numberOfDinner = numberOfDinner;
+        this.probablyArriveTime = probablyArriveTime;
+        this.name = name;
+        this.phone = phone;
+        this.location = location;
+        this.detailAddress = detailAddress;
         this.foods = foods;
-        OrderTime orderTime = JSON.parseObject(time,OrderTime.class);
-        this.time = orderTime.getYear()+"年"+orderTime.getMouth()+"月"+orderTime.getDay()+"日"+orderTime.getHour()+"时"+orderTime.getMinute()+"分";
-    }
-
-    public GetOrderDetailVo() {
-        this.foods = new FoodInfo[1];
-        foods[0] = new FoodInfo();
     }
 
     public String getOid() {
@@ -48,16 +64,56 @@ public class GetOrderDetailVo {
         return rid;
     }
 
-    public double getTotalPrice() {
-        return totalPrice;
-    }
-
     public double getPackagePrice() {
         return packagePrice;
     }
 
     public double getDeliveryPrice() {
         return deliveryPrice;
+    }
+
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public String getRestaurantPicture() {
+        return restaurantPicture;
+    }
+
+    public String getRestaurantPhone() {
+        return restaurantPhone;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public String getProbablyArriveTime() {
+        return probablyArriveTime;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getDetailAddress() {
+        return detailAddress;
+    }
+
+    public int getNumberOfDinner() {
+        return numberOfDinner;
     }
 
     public FoodInfo[] getFoods() {

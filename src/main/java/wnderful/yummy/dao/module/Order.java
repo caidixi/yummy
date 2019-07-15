@@ -2,9 +2,6 @@ package wnderful.yummy.dao.module;
 
 import com.alibaba.fastjson.JSON;
 import wnderful.yummy.entity.entityInModule.OrderTime;
-import wnderful.yummy.util.LocationHelper;
-import wnderful.yummy.util.PriceHelper;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,19 +17,22 @@ public class Order {
     private String time;
 
     @Column(nullable = false)
+    private String orderTime;
+
+    @Column(nullable = false)
     private int year;
 
     @Column(nullable = false)
     private int month;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
-    private String address;
-
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
     private String remark;
 
     @Column(nullable = false)
     private int numberOfDinner;
+
+    @Column(nullable = false)
+    private int deliveryTime;
 
     @Column(nullable = false)
     private double totalPrice;
@@ -44,13 +44,22 @@ public class Order {
     private double deliveryPrice;
 
     @Column(nullable = false)
-    private double restaurantDiscount;
-
-    @Column(nullable = false)
-    private double memberDiscount;
-
-    @Column(nullable = false)
     private String payAccount;
+
+    @Column(nullable = false)
+    private int evaluatePoint;
+
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
+    private String name;
+
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
+    private String phone;
+
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
+    private String location;
+
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
+    private String detailAddress;
 
     @ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},optional=false)
     @JoinColumn(name = "member_uid")
@@ -67,28 +76,31 @@ public class Order {
     @OneToMany(mappedBy  = "order",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<OrderItem> orderItemList;
 
-    public Order(String time,String address,String remark, int numberOfDinner,  Member member, Restaurant restaurant, OrderState orderState) {
+    public Order() {
+    }
+
+    public Order(OrderTime time, Address  address, String remark, int numberOfDinner, Member member, Restaurant restaurant, int deliveryTime,
+                 OrderState orderState) {
         this.payAccount = "";
-        this.time = time;
-        this.address = address;
+        this.time = JSON.toJSONString(time);
+        this.orderTime = time.getTime();
+        this.name = address.getName();
+        this.phone = address.getPhone();
+        this.location = address.getLocation();
+        this.detailAddress = address.getDetailAddress();
         this.remark = remark;
         this.numberOfDinner = numberOfDinner;
+        this.deliveryTime = deliveryTime;
         this.member = member;
         this.restaurant = restaurant;
         this.orderState = orderState;
         orderItemList = new ArrayList<>();
 
-        OrderTime orderTime = JSON.parseObject(time,OrderTime.class);
-        this.year = orderTime.getYear();
-        this.month = orderTime.getMouth();
-        memberDiscount= PriceHelper.getMemberDiscount(member.getLevel());
-        restaurantDiscount = restaurant.getTotalDiscount();
-        int distance = LocationHelper.getDistance(address,restaurant.getAddress());
-        deliveryPrice = PriceHelper.getDeliveryPrice(distance);
+        this.year = time.getYear();
+        this.month = time.getMouth();
+        deliveryPrice = restaurant.getDeliverPrice();
+        evaluatePoint = 3;
         totalPrice += deliveryPrice;
-    }
-
-    public Order() {
     }
 
     public String getTime() {
@@ -103,20 +115,8 @@ public class Order {
         }
     }
 
-    public String getAddress() {
-        return address;
-    }
-
     public String getRemark() {
         return remark;
-    }
-
-    public String getFirstFoodName() {
-        if(orderItemList.size()>0){
-            return orderItemList.get(0).getFoodName();
-        }else {
-            return "";
-        }
     }
 
     public int getNumberOfDinner() {
@@ -135,16 +135,12 @@ public class Order {
         return deliveryPrice;
     }
 
-    public double getRestaurantDiscount() {
-        return restaurantDiscount;
-    }
-
-    public double getMemberDiscount() {
-        return memberDiscount;
-    }
-
     public Member getMember() {
         return member;
+    }
+
+    public int getEvaluatePoint() {
+        return evaluatePoint;
     }
 
     public Restaurant getRestaurant() {
@@ -153,10 +149,6 @@ public class Order {
 
     public String getRestaurantRid(){
         return restaurant.getRid();
-    }
-
-    public String getRestaurantName(){
-        return restaurant.getName();
     }
 
     public String getOrderStateName(){
@@ -171,6 +163,10 @@ public class Order {
         return month;
     }
 
+    public String getOrderTime() {
+        return orderTime;
+    }
+
     public List<OrderItem> getOrderItemList() {
         return orderItemList;
     }
@@ -183,6 +179,26 @@ public class Order {
         return orderState;
     }
 
+    public int getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getDetailAddress() {
+        return detailAddress;
+    }
+
     public void setOrderState(OrderState orderState) {
         this.orderState = orderState;
     }
@@ -191,11 +207,7 @@ public class Order {
         orderItemList.add(orderItem);
         packagePrice += orderItem.getPackagePrice();
         totalPrice += orderItem.getPackagePrice();
-        if(orderItem.getNumber()>orderItem.getDiscountLimit()){
-            totalPrice += (orderItem.getDiscount()*orderItem.getDiscountLimit()+orderItem.getNumber()-orderItem.getDiscountLimit())*orderItem.getPrice()*memberDiscount*restaurantDiscount;
-        }else {
-            totalPrice += orderItem.getPrice()*orderItem.getDiscount()*orderItem.getNumber()*memberDiscount*restaurantDiscount;
-        }
+        totalPrice += orderItem.getPrice()*orderItem.getNumber();
     }
 
     public String getPayAccount() {
@@ -206,10 +218,14 @@ public class Order {
         this.payAccount = payAccount;
     }
 
-    public void setTime(String time) {
-        this.time = time;
-        OrderTime orderTime = JSON.parseObject(time,OrderTime.class);
-        this.year = orderTime.getYear();
-        this.month = orderTime.getMouth();
+    public void setTime(OrderTime time) {
+        this.time = JSON.toJSONString(time);
+        this.orderTime = time.getTime();
+        this.year = time.getYear();
+        this.month = time.getMouth();
+    }
+
+    public void setEvaluatePoint(int evaluatePoint) {
+        this.evaluatePoint = evaluatePoint;
     }
 }

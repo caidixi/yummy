@@ -9,11 +9,13 @@ public interface RestaurantTypeDataService {
 
     RestaurantType getSnackType();
 
-    RestaurantType getWesternType();
+    RestaurantType getMainType();
 
-    RestaurantType getRegionalType();
+    RestaurantType getSuperMarketType();
 
-    RestaurantType getNoodleType();
+    RestaurantType getFruitType();
+
+    RestaurantType getTeaType();
 
     RestaurantType getByName(String name);
 

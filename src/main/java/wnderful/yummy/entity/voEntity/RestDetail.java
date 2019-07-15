@@ -3,17 +3,19 @@ package wnderful.yummy.entity.voEntity;
 public class RestDetail {
     private String name;
     private String rid;
+    private double point;
     private String picture;
-    private String type;
-    private int distance;
+    private double startingPrice;
+    private double deliveryPrice;
     private int probablyTime;
 
-    public RestDetail(String name, String rid, String picture, String type, int distance, int probablyTime) {
+    public RestDetail(String name, String rid, double point, String picture, double startingPrice, double deliveryPrice, int probablyTime) {
         this.name = name;
         this.rid = rid;
+        this.point = point;
         this.picture = picture;
-        this.type = type;
-        this.distance = distance;
+        this.startingPrice = startingPrice;
+        this.deliveryPrice = deliveryPrice;
         this.probablyTime = probablyTime;
     }
 
@@ -36,6 +38,14 @@ public class RestDetail {
         this.rid = rid;
     }
 
+    public double getPoint() {
+        return point;
+    }
+
+    public void setPoint(double point) {
+        this.point = point;
+    }
+
     public String getPicture() {
         return picture;
     }
@@ -44,20 +54,20 @@ public class RestDetail {
         this.picture = picture;
     }
 
-    public String getType() {
-        return type;
+    public double getStartingPrice() {
+        return startingPrice;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setStartingPrice(double startingPrice) {
+        this.startingPrice = startingPrice;
     }
 
-    public int getDistance() {
-        return distance;
+    public double getDeliveryPrice() {
+        return deliveryPrice;
     }
 
-    public void setDistance(int distance) {
-        this.distance = distance;
+    public void setDeliveryPrice(double deliveryPrice) {
+        this.deliveryPrice = deliveryPrice;
     }
 
     public int getProbablyTime() {

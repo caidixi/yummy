@@ -3,27 +3,22 @@ package wnderful.yummy.entity.voEntity;
 public class FoodDetail {
     private String name;
     private String fid;
+    private String type;
     private String announcement;
     private String picture;
     private double price;
     private double packagePrice;
-    private double discount;
-    private int discountLimit;
-    private int quality;
+    private int quantity;
 
-    public FoodDetail() {
-    }
-
-    public FoodDetail(String name, String fid, String announcement, String picture, double price, double packagePrice, double discount, int discountLimit, int quality) {
+    public FoodDetail(String name, String fid, String type, String announcement, String picture, double price, double packagePrice, int quantity) {
         this.name = name;
         this.fid = fid;
+        this.type = type;
         this.announcement = announcement;
         this.picture = picture;
         this.price = price;
         this.packagePrice = packagePrice;
-        this.discount = discount;
-        this.discountLimit = discountLimit;
-        this.quality = quality;
+        this.quantity = quantity;
     }
 
     public String getName() {
@@ -50,15 +45,11 @@ public class FoodDetail {
         return packagePrice;
     }
 
-    public double getDiscount() {
-        return discount;
+    public String getType() {
+        return type;
     }
 
-    public int getDiscountLimit() {
-        return discountLimit;
-    }
-
-    public int getQuality() {
-        return quality;
+    public int getQuantity() {
+        return quantity;
     }
 }

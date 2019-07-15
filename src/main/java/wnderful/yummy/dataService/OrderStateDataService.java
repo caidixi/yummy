@@ -7,4 +7,5 @@ public interface OrderStateDataService {
     OrderState getCancelOrderState();
     OrderState getPaidOrderState();
     OrderState getDoneOrderState();
+    OrderState getAssessedOrderState();
 }

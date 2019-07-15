@@ -8,7 +8,7 @@ public class OrderItem {
     @GeneratedValue
     private Long itemId;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
     private String foodName;
 
     @Column(nullable = false)
@@ -20,12 +20,6 @@ public class OrderItem {
     @Column(nullable = false)
     private double packagePrice;
 
-    @Column(nullable = false)
-    private double discount;
-
-    @Column(nullable = false)
-    private int discountLimit;
-
     @ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},optional=false)
     @JoinColumn(name = "food_fid")
     private Food food;
@@ -34,18 +28,16 @@ public class OrderItem {
     @JoinColumn(name = "order_oid")
     private Order order;
 
-    public OrderItem(String foodName, int number, double price, double packagePrice, double discount, int discountLimit, Food food, Order order) {
+    public OrderItem() {
+    }
+
+    public OrderItem(String foodName, int number, double price, double packagePrice, Food food, Order order) {
         this.foodName = foodName;
         this.number = number;
         this.price = price;
         this.packagePrice = packagePrice;
-        this.discount = discount;
-        this.discountLimit = discountLimit;
         this.food = food;
         this.order = order;
-    }
-
-    public OrderItem() {
     }
 
     public Long getItemId() {
@@ -70,14 +62,6 @@ public class OrderItem {
 
     public double getPackagePrice() {
         return packagePrice;
-    }
-
-    public double getDiscount() {
-        return discount;
-    }
-
-    public int getDiscountLimit() {
-        return discountLimit;
     }
 
     public Food getFood() {

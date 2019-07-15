@@ -1,7 +1,7 @@
 package wnderful.yummy.response.ManagerResponse;
 
 import wnderful.yummy.response.CommonResponse;
-import wnderful.yummy.responseCode.ManagerResponseCode.GetStatisticsCode;
+import wnderful.yummy.responseCode.managerResponseCode.GetStatisticsCode;
 import wnderful.yummy.vo.managerVo.MemberStatisticsVo;
 
 public class GetMemberStatisticsRes extends CommonResponse {

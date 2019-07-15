@@ -8,25 +8,25 @@ public class ModifyApplication {
     @GeneratedValue
     private Long modId;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
     private String newName;
 
     @Column(nullable = false)
     private String newPhone;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
     private String newAddress;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
     private String newType;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
     private String newAnnouncement;
 
     @Column(nullable = false)
     private String newAccountId;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
     private String newPicture;
 
     @Column(nullable = false,unique = true)

@@ -8,8 +8,7 @@ public class NewFoodReq {
     private double packagePrice;
     private int number;
     private String picture;
-    private double discount;
-    private int discountLimit;
+    private String type;
 
     public NewFoodReq() {
     }
@@ -70,19 +69,11 @@ public class NewFoodReq {
         this.picture = picture;
     }
 
-    public double getDiscount() {
-        return discount;
+    public String getType() {
+        return type;
     }
 
-    public void setDiscount(double discount) {
-        this.discount = discount;
-    }
-
-    public int getDiscountLimit() {
-        return discountLimit;
-    }
-
-    public void setDiscountLimit(int discountLimit) {
-        this.discountLimit = discountLimit;
+    public void setType(String type) {
+        this.type = type;
     }
 }

@@ -7,9 +7,12 @@ import wnderful.yummy.dao.module.MemberState;
 import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member,Long> {
-    Member findMemberByEmail(String email);
 
     Member findMemberByUid(Long uid);
+
+    Member findMemberByPhone(String phone);
+
+    Member findMemberByName(String name);
 
     List<Member> findByMemberState(MemberState memberState);
 }

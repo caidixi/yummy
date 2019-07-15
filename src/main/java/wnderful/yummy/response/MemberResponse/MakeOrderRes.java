@@ -1,9 +1,7 @@
 package wnderful.yummy.response.MemberResponse;
 
 import wnderful.yummy.response.CommonResponse;
-import wnderful.yummy.responseCode.memberResponseCode.GetMemberInfoCode;
 import wnderful.yummy.responseCode.memberResponseCode.MakeOrderCode;
-import wnderful.yummy.vo.memberVo.GetMemInfoVo;
 import wnderful.yummy.vo.memberVo.MakeOrderVo;
 
 public class MakeOrderRes extends CommonResponse {
@@ -13,7 +11,7 @@ public class MakeOrderRes extends CommonResponse {
         this.setOpinion(code.getMessage());
     }
 
-    public MakeOrderRes(MakeOrderCode code, MakeOrderVo vo) {
+    public MakeOrderRes(MakeOrderCode code,MakeOrderVo vo) {
         this.setResult(code.getCode());
         this.setOpinion(code.getMessage());
         this.setBody(vo);

@@ -9,10 +9,14 @@ import wnderful.yummy.dao.repository.FoodRepository;
 import wnderful.yummy.dao.repository.RestaurantRepository;
 import wnderful.yummy.dataService.RestaurantFoodDataService;
 import wnderful.yummy.entity.voEntity.FoodDetail;
+import wnderful.yummy.entity.voEntity.SearchFoodResult;
+import wnderful.yummy.util.LocationHelper;
 import wnderful.yummy.vo.memberVo.GetRestDetailVo;
+import wnderful.yummy.vo.memberVo.SearchFoodVo;
 import wnderful.yummy.vo.restaurantVo.RestDetailVo;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class RestaurantFoodDataServiceImpl implements RestaurantFoodDataService {
@@ -28,11 +32,12 @@ public class RestaurantFoodDataServiceImpl implements RestaurantFoodDataService 
     }
 
     @Override
-    public void newFood(String rid, String foodName, String announcement, double price, double packagePrice, int number, String picture, double discount, int discountLimit) {
+    public void newFood(String rid, String foodName, String announcement, double price, double packagePrice, int number, String picture, String type) {
         Restaurant restaurant = restaurantRepository.findRestaurantByRid(rid);
         FoodState foodState = foodStateDataService.getNormalFoodState();
         assert restaurant!=null&&foodState!=null;
-        Food food = new Food(foodName,number,announcement,price,packagePrice,picture,discount,discountLimit,foodState,restaurant);
+        String fid = createFoodId();
+        Food food = new Food(fid,foodName,number,announcement,price,packagePrice,picture,type,foodState,restaurant);
         foodRepository.save(food);
     }
 
@@ -40,10 +45,9 @@ public class RestaurantFoodDataServiceImpl implements RestaurantFoodDataService 
     public GetRestDetailVo getRestaurantDetailFromMember(String rid) {
         Restaurant restaurant = restaurantRepository.findRestaurantByRid(rid);
         assert restaurant!=null;
-        //FullReductionList fullReductionList = JSON.parseObject(restaurant.getFullReduction(),FullReductionList.class);
         FoodDetail[] foodDetails =getFoodDetail(restaurant);
-        return new GetRestDetailVo(restaurant.getName(),restaurant.getPicture(),restaurant.getRid(),restaurant.getAddress(),
-                restaurant.getAnnouncement(),restaurant.getTotalDiscount(),foodDetails);
+        return new GetRestDetailVo(restaurant.getName(),restaurant.getRestaurantPoint(),restaurant.getPicture(),restaurant.getStartingPrice(),restaurant.getDeliverPrice(),restaurant
+                .getPhone(),restaurant.getAddress(),restaurant.getAnnouncement(),restaurant.getLng(),restaurant.getLat(),foodDetails);
     }
 
     @Override
@@ -61,8 +65,34 @@ public class RestaurantFoodDataServiceImpl implements RestaurantFoodDataService 
         FoodDetail[] foodDetails = new FoodDetail[foods.size()];
         for(int  i = 0;i < foods.size();i++){
             Food food = foods.get(i);
-            foodDetails[i] = new FoodDetail(food.getName(),food.getFid(),food.getAnnouncement(),food.getPicture(),food.getPrice(),food.getPackagePrice(),food.getDiscount(),food.getDiscountLimit(),food.getNumber());
+            foodDetails[i] = new FoodDetail(food.getName(),food.getFid(),food.getType(),food.getAnnouncement(),food.getPicture(),food.getPrice(),food.getPackagePrice(),food.getNumber());
         }
         return foodDetails;
+    }
+
+    @Override
+    public SearchFoodVo searchFoodByName(String name, String city, double lng, double lat) {
+        List<Food> foods = foodRepository.findByRestaurantCityAndNameContaining(city,name);
+        SearchFoodResult[] searchFoodResults = new SearchFoodResult[foods.size()];
+        for(int i = 0;i < foods.size();i++){
+            Food food = foods.get(i);
+            Restaurant restaurant = food.getRestaurant();
+            double distance = LocationHelper.getDistance(restaurant.getLng(), restaurant.getLat(),lng,lat);
+            int arriveTime = LocationHelper.getArriveTime(distance);
+            SearchFoodResult searchFoodResult = new SearchFoodResult(restaurant.getName(),restaurant.getRid(),restaurant.
+                    getRestaurantPoint(),restaurant.getPicture(),restaurant.getStartingPrice(),restaurant.getDeliverPrice(),
+                    arriveTime,food.getFid(),food.getType(),food.getPackagePrice(),food.getName(),food.getPicture(),food.getPrice(),food.getAnnouncement(),food.getNumber());
+            searchFoodResults[i] = searchFoodResult;
+        }
+        return new SearchFoodVo(searchFoodResults);
+    }
+
+    private String createFoodId() {
+        while (true) {
+            String fid = UUID.randomUUID().toString().substring(0, 9);
+            if (foodRepository.findByFid(fid) == null) {
+                return fid;
+            }
+        }
     }
 }

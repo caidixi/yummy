@@ -1,7 +1,6 @@
 package wnderful.yummy.vo.commonVo;
 
 public class LogInVo {
-    private String token;
     private String type;
     private String id;
     private String name;
@@ -9,15 +8,10 @@ public class LogInVo {
     public LogInVo() {
     }
 
-    public LogInVo(String token, String type, String id,String name) {
-        this.token = token;
+    public LogInVo(String type, String id,String name) {
         this.type = type;
         this.id = id;
         this.name = name;
-    }
-
-    public String getToken() {
-        return token;
     }
 
     public String getType() {

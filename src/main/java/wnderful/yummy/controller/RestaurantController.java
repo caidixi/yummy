@@ -36,8 +36,7 @@ public class RestaurantController {
     @PostMapping("/newFood")
     public Response newFood(@RequestBody NewFoodReq newFoodReq) {
        return restaurantService.newFood(newFoodReq.getRid(),newFoodReq.getFoodName(),newFoodReq.getAnnouncement(),newFoodReq.getPrice(),
-               newFoodReq.getPackagePrice(),newFoodReq.getNumber(),newFoodReq.getPicture(),newFoodReq.getDiscount(),
-               newFoodReq.getDiscountLimit());
+               newFoodReq.getPackagePrice(),newFoodReq.getNumber(),newFoodReq.getPicture(),newFoodReq.getType());
     }
 
     @PostMapping("/newDiscount")
@@ -50,7 +49,7 @@ public class RestaurantController {
     public Response modifyFood(@RequestBody ModFoodReq modFoodReq) {
         return restaurantService.modifyFood(modFoodReq.getRid(),modFoodReq.getFid(),modFoodReq.getNewFoodName(),
                 modFoodReq.getNewAnnouncement(),modFoodReq.getNewPrice(),modFoodReq.getNewPackagePrice(),modFoodReq.getNewNumber(),
-                modFoodReq.getPicture(),modFoodReq.getNewDiscount(),modFoodReq.getNewDiscountLimit());
+                modFoodReq.getPicture(),modFoodReq.getType());
     }
 
     @PostMapping("/deleteFood")

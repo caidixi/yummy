@@ -6,8 +6,20 @@ import wnderful.yummy.entity.entityInModule.OrderTime;
 import java.util.Calendar;
 
 public class TimeHelper {
-    public static String getInstanceTime() {
+    public static OrderTime getInstanceTime() {
         Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int mouth = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        int second = calendar.get(Calendar.SECOND);
+        return new OrderTime(year,mouth,day,hour,minute,second);
+    }
+
+    public static String getProbablyArriveTime(int deliveryTime){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE,deliveryTime);
         int year = calendar.get(Calendar.YEAR);
         int mouth = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -39,7 +51,7 @@ public class TimeHelper {
         if (year == orderTime.getYear()) {
             if (mouth == orderTime.getMouth()) {
                 if (day == orderTime.getDay()) {
-                    return (60*hour+minute)-(orderTime.getHour()*60+orderTime.getMinute())>1;
+                    return (60*hour+minute)-(orderTime.getHour()*60+orderTime.getMinute())>10;
                 } else {
                     return true;
                 }

@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 
 public class SHAHelper {
-    private static final String KEY_SHA = "SHA";
+    private static final String KEY_SHA = "SHA-256";
 
 
     public static  String  getResult(String inputStr)

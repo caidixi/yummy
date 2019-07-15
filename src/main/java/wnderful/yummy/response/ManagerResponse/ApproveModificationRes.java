@@ -1,7 +1,7 @@
 package wnderful.yummy.response.ManagerResponse;
 
 import wnderful.yummy.response.Response;
-import wnderful.yummy.responseCode.ManagerResponseCode.ApproveModificationCode;
+import wnderful.yummy.responseCode.managerResponseCode.ApproveModificationCode;
 
 public class ApproveModificationRes extends Response {
 

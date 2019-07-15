@@ -7,10 +7,14 @@ import wnderful.yummy.dao.module.Restaurant;
 
 import java.util.List;
 
-public interface FoodRepository extends JpaRepository<Food,Long> {
-    Food findByFidAndFoodStateNot(Long fid,FoodState foodState);
+public interface FoodRepository extends JpaRepository<Food,String> {
+    Food findByFid(String fid);
 
-    Food findByFidAndFoodState(Long fid,FoodState foodState);
+    Food findByFidAndFoodStateNot(String fid,FoodState foodState);
+
+    Food findByFidAndFoodState(String fid,FoodState foodState);
 
     List<Food> findByRestaurantAndFoodStateNot(Restaurant restaurant,FoodState foodState);
+
+    List<Food> findByRestaurantCityAndNameContaining(String city,String name);
 }

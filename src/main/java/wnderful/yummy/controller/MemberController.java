@@ -2,6 +2,7 @@ package wnderful.yummy.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import wnderful.yummy.blserviceImpl.MemberServiceImpl;
 import wnderful.yummy.request.memberRequest.*;
 import wnderful.yummy.response.Response;
@@ -17,14 +18,35 @@ public class MemberController {
     }
 
     @GetMapping("/getInformation")
-    public Response login(@RequestParam("uid") String uid) {
+    public Response getInformation(@RequestParam("uid") String uid) {
         return memberService.getInformation(uid);
     }
 
-    @PostMapping("/modifyInformation")
-    public Response modifyInformation(@RequestBody ModMemberInfoReq modMemberInfoReq) {
-        return memberService.modifyInformation(modMemberInfoReq.getUid(), modMemberInfoReq.getNewName(),modMemberInfoReq.getNewPhone(),
-                modMemberInfoReq.getAddress1(), modMemberInfoReq.getAddress2(), modMemberInfoReq.getAddress3());
+    @PostMapping("/modifyAvatar")
+    public Response modifyAvatar(@RequestParam("image") MultipartFile imageObject, @RequestParam("uid") String uid) {
+        return memberService.modifyAvatar(imageObject, uid);
+    }
+
+    @GetMapping("/getAddressList")
+    public Response getAddressList(@RequestParam("uid") String uid) {
+        return memberService.getAddressList(uid);
+    }
+
+    @PostMapping("/addAddress")
+    public Response addAddress(@RequestBody AddAddressReq addAddressReq) {
+        return memberService.addAddress(addAddressReq.getUid(), addAddressReq.getName(), addAddressReq.getGender(), addAddressReq.getLocation(),
+                addAddressReq.getDetailAddress(), addAddressReq.getLng(), addAddressReq.getLat(), addAddressReq.getPhone());
+    }
+
+    @PostMapping("/modifyAddress")
+    public Response modifyAddress(@RequestBody ModifyAddressReq modifyAddressReq) {
+        return memberService.modifyAddress(modifyAddressReq.getUid(), modifyAddressReq.getAddressId(), modifyAddressReq.getName(),
+                modifyAddressReq.getGender(), modifyAddressReq.getLocation(), modifyAddressReq.getDetailAddress(), modifyAddressReq.getLng(), modifyAddressReq.getLat(), modifyAddressReq.getPhone());
+    }
+
+    @PostMapping("/deleteAddress")
+    public Response deleteAddress(@RequestBody DeleteAddressReq deleteAddressReq) {
+        return memberService.deleteAddress(deleteAddressReq.getUid(), deleteAddressReq.getAddressId());
     }
 
     @PostMapping("/modifyPassword")
@@ -32,24 +54,14 @@ public class MemberController {
         return memberService.modifyPassword(modPasswordReq.getUid(), modPasswordReq.getOldPassword(), modPasswordReq.getNewPassword());
     }
 
-    @GetMapping("/getRestaurantList")
-    public Response getRestaurantList(@RequestParam("uid") String uid) {
-        return memberService.getRestaurantList(uid);
-    }
-
-    @PostMapping("/getRestaurantDetail")
-    public Response getRestaurantDetail(@RequestBody GetRestDetailReq getRestDetailReq) {
-        return memberService.getRestaurantDetail(getRestDetailReq.getUid(), getRestDetailReq.getRid());
-    }
-
     @PostMapping("/makeOrder")
     public Response makeOrder(@RequestBody MakeOrderReq makeOrderReq) {
-        return memberService.makeOrder(makeOrderReq.getUid(), makeOrderReq.getRid(), makeOrderReq.getAddress(), makeOrderReq.getNumOfDinner(),makeOrderReq.getRemark(), makeOrderReq.getFoods());
+        return memberService.makeOrder(makeOrderReq.getUid(), makeOrderReq.getRid(), makeOrderReq.getAddressId(), makeOrderReq.getNumOfDinner(), makeOrderReq.getRemark(),makeOrderReq.getTotalPrice(), makeOrderReq.getFoods());
     }
 
     @PostMapping("/payOrder")
     public Response payOrder(@RequestBody PayOrderReq payOrderReq) {
-        return memberService.payOrder(payOrderReq.getUid(),payOrderReq.getAccountId(),payOrderReq.getAccountPassword(), payOrderReq.getOid());
+        return memberService.payOrder(payOrderReq.getUid(), payOrderReq.getAccountId(), payOrderReq.getAccountPassword(), payOrderReq.getOid());
     }
 
     @GetMapping("/getOrderList")
@@ -57,9 +69,9 @@ public class MemberController {
         return memberService.getOrderList(uid);
     }
 
-    @PostMapping("/getOrderDetail")
-    public Response getOrderDetail(@RequestBody GetOrderDetailReq getOrderDetailReq) {
-        return memberService.getOrderDetail(getOrderDetailReq.getUid(), getOrderDetailReq.getOid());
+    @GetMapping("/getOrderDetail")
+    public Response getOrderDetail(@RequestParam("uid") String uid,@RequestParam("oid") String oid) {
+        return memberService.getOrderDetail(uid,oid);
     }
 
     @PostMapping("/cancelOrder")
@@ -70,6 +82,11 @@ public class MemberController {
     @PostMapping("/confirmOrder")
     public Response confirmOrder(@RequestBody ConfirmOrderReq confirmOrderReq) {
         return memberService.confirmOrder(confirmOrderReq.getUid(), confirmOrderReq.getOid());
+    }
+
+    @PostMapping("/evaluateOrder")
+    public Response evaluateOrder(@RequestBody EvaluateOrderReq evaluateOrderReq) {
+        return memberService.evaluateOrder(evaluateOrderReq.getUid(), evaluateOrderReq.getOid(),evaluateOrderReq.getPoint());
     }
 
     @GetMapping("/getDetailByTime")
@@ -95,5 +112,20 @@ public class MemberController {
     @GetMapping("/logOff")
     public Response logOff(@RequestParam("uid") String uid) {
         return memberService.logOff(uid);
+    }
+
+    @PostMapping("/collectRestaurant")
+    public Response collectRestaurant(@RequestBody GetRestDetailReq restDetailReq) {
+        return memberService.collectRestaurant(restDetailReq.getUid(),restDetailReq.getRid());
+    }
+
+    @PostMapping("/cancelCollectRestaurant")
+    public Response cancelCollectRestaurant(@RequestBody GetRestDetailReq restDetailReq) {
+        return memberService.cancelCollectRestaurant(restDetailReq.getUid(),restDetailReq.getRid());
+    }
+
+    @GetMapping("/getCollectRestaurantList")
+    public Response getCollectRestaurantList(@RequestParam("uid") String uid,@RequestParam("city") String city,@RequestParam("lng") double lng,@RequestParam("lat") double lat){
+        return memberService.getCollectRestaurantList(uid,city,lng,lat);
     }
 }

@@ -8,49 +8,110 @@ public class Address {
     @GeneratedValue
     private Long addressId;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
-    private String locationInfo1;
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
+    private String name;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
-    private String locationInfo2;
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
+    private String gender;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
-    private String locationInfo3;
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
+    private String location;
+
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
+    private String detailAddress;
+
+    @Column(nullable = false)
+    private double lng;
+
+    @Column(nullable = false)
+    private double lat;
+
+    @Column(nullable = false)
+    private String phone;
+
+    @ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},optional=false)
+    @JoinColumn(name = "member_uid")
+    private Member member;
 
     public Address() {
     }
 
-    public Address(String locationInfo1, String locationInfo2, String locationInfo3) {
-        this.locationInfo1 = locationInfo1;
-        this.locationInfo2 = locationInfo2;
-        this.locationInfo3 = locationInfo3;
+    public Address(String name, String gender, String location, String detailAddress, double lng, double lat, String phone, Member member) {
+        this.name = name;
+        this.gender = gender;
+        this.location = location;
+        this.detailAddress = detailAddress;
+        this.lng = lng;
+        this.lat = lat;
+        this.phone = phone;
+        this.member = member;
     }
 
     public Long getAddressId() {
         return addressId;
     }
 
-    public String getLocationInfo1() {
-        return locationInfo1;
+    public String getName() {
+        return name;
     }
 
-    public String getLocationInfo2() {
-        return locationInfo2;
+    public String getGender() {
+        return gender;
     }
 
-    public String getLocationInfo3() {
-        return locationInfo3;
+    public String getLocation() {
+        return location;
     }
 
-    public void setLocationInfo1(String locationInfo1) {
-        this.locationInfo1 = locationInfo1;
+    public String getDetailAddress() {
+        return detailAddress;
     }
 
-    public void setLocationInfo2(String locationInfo2) {
-        this.locationInfo2 = locationInfo2;
+    public double getLng() {
+        return lng;
     }
 
-    public void setLocationInfo3(String locationInfo3) {
-        this.locationInfo3 = locationInfo3;
+    public double getLat() {
+        return lat;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setDetailAddress(String detailAddress) {
+        this.detailAddress = detailAddress;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }

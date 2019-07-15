@@ -2,16 +2,14 @@ package wnderful.yummy.entity;
 
 public class FoodOrder {
     private String fid;
-    private String name;
     private int number;
 
-    public FoodOrder(String fid, String name, int number) {
-        this.fid = fid;
-        this.name = name;
-        this.number = number;
+    public FoodOrder() {
     }
 
-    public FoodOrder() {
+    public FoodOrder(String fid, int number) {
+        this.fid = fid;
+        this.number = number;
     }
 
     public String getFid() {
@@ -28,13 +26,5 @@ public class FoodOrder {
 
     public void setNumber(int number) {
         this.number = number;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

@@ -74,14 +74,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public Response newFood(String rid,String foodName, String announcement, double price, double packagePrice, int number,
-                            String picture, double discount, int discountLimit) {
+                            String picture, String type) {
         if(restaurantDataService.restaurantRidExist(rid)){
-            System.out.println(price+" "+packagePrice+" "+number+ " "+ discount+" "+ discountLimit);
-            if(price>0&&packagePrice>0&&number>0&&discount>0&&discount<=1){
-                if (discount == 1){
-                    discountLimit = 10000;
-                }
-                restaurantFoodDataService.newFood(rid,foodName,announcement,price,packagePrice,number,picture,discount,discountLimit);
+            if(price>0&&packagePrice>0&&number>0){
+                restaurantFoodDataService.newFood(rid,foodName,announcement,price,packagePrice,number,picture,type);
                 return new NewFoodRes(NewFoodCode.SUCCESS);
             }else {
                 return new NewFoodRes(NewFoodCode.WRONGFORMAT);
@@ -115,15 +111,11 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public Response modifyFood(String rid, String fid, String newFoodName, String newAnnouncement, double newPrice,
-                               double newPackagePrice, int newNumber, String newPicture, double newDiscount, int newDiscountLimit) {
+                               double newPackagePrice, int newNumber, String newPicture, String newType) {
         if(restaurantDataService.restaurantRidExist(rid)){
             if(foodDataService.foodExist(fid)){
-                System.out.println(newPrice+" "+newPackagePrice+" "+ newNumber+" "+ newDiscount);
-                if(newPrice>0&&newPackagePrice>0&&newNumber>0&&newDiscount>0&&newDiscount<=1){
-                    if(newDiscount==1){
-                        newDiscountLimit = 10000;
-                    }
-                    foodDataService.modFood(fid,newFoodName,newAnnouncement,newPrice,newPackagePrice,newNumber,newPicture,newDiscount,newDiscountLimit);
+                if(newPrice>0&&newPackagePrice>0&&newNumber>0){
+                    foodDataService.modFood(fid,newFoodName,newAnnouncement,newPrice,newPackagePrice,newNumber,newPicture,newType);
                     return new ModFoodRes(ModFoodCode.SUCCESS);
                 }else {
                     return new ModFoodRes(ModFoodCode.WRONGFORMAT);

@@ -4,7 +4,8 @@ public enum OrderStateName {
     UNPAID("unpaid"),
     CANCEL("cancel"),
     PAID("paid"),
-    DONE("done");
+    DONE("done"),
+    ASSESSED("assessed");
 
     private String stateName;
 

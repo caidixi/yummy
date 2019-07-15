@@ -13,7 +13,7 @@ public class Manager {
     @Column(nullable = false,unique = true)
     private String email;
 
-    @Column(nullable = false,columnDefinition ="varchar(255) character set utf8")
+    @Column(nullable = false,columnDefinition ="varchar(255) character set utf8mb4")
     private String name;
 
     @Column(nullable = false)

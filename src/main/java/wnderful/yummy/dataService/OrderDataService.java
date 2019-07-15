@@ -1,5 +1,6 @@
 package wnderful.yummy.dataService;
 
+import org.springframework.transaction.annotation.Transactional;
 import wnderful.yummy.entity.FoodOrder;
 import wnderful.yummy.vo.memberVo.*;
 import wnderful.yummy.vo.restaurantVo.RestDetailByFoodVo;
@@ -12,6 +13,8 @@ public interface OrderDataService {
 
     void confirmOrder(String uid,String oid);
 
+    void evaluateOrder(String oid,int point);
+
     boolean orderExist(String oid);
 
     boolean orderIsUnpaid(String oid);
@@ -20,7 +23,12 @@ public interface OrderDataService {
 
     boolean orderIsPaid(String oid);
 
-    MakeOrderVo makeOrder(String uid, String rid, String address, int numberOfDinner, String remark, FoodOrder[] foodOrders);
+    boolean orderIsDone(String oid);
+
+    boolean orderIsFromMember(String oid,String uid);
+
+    @Transactional
+    String makeOrder(String uid, String rid, String addressId, int numberOfDinner, String remark,double totalPrice, FoodOrder[] foodOrders);
 
 
     MemGetOrderListVo getMemOrderList(String uid);

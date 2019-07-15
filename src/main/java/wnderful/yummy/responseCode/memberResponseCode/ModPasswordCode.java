@@ -6,7 +6,8 @@ public enum ModPasswordCode {
     CANCEL(2,"用户已注销"),
     EMPTY(3,"密码不得为空"),
     REPEAT(4,"新旧密码不可重复"),
-    WRONG(4,"密码错误");
+    WRONG(5,"密码错误"),
+    CODEERROR(6,"验证码错误");
     private int code;
     private String message;
 

@@ -6,18 +6,20 @@ import wnderful.yummy.entity.entityInModule.OrderTime;
 public class MemberOrderInfo {
     private String rid;
     private String restaurantName;
+    private String restaurantPicture;
+    private String restaurantPhone;
     private String oid;
     private String time;
     private double price;
-    private String firstFood;
     private String state;
 
-    public MemberOrderInfo(String rid, String restaurantName, String oid, String time, double price, String firstFood, String state) {
+    public MemberOrderInfo(String rid, String restaurantName,String restaurantPicture,String restaurantPhone, String oid, String time, double price,String state) {
         this.rid = rid;
         this.restaurantName = restaurantName;
+        this.restaurantPicture = restaurantPicture;
+        this.restaurantPhone = restaurantPhone;
         this.oid = oid;
         this.price = price;
-        this.firstFood = firstFood;
         this.state = state;
         OrderTime orderTime = JSON.parseObject(time,OrderTime.class);
         this.time = orderTime.getYear()+"年"+orderTime.getMouth()+"月"+orderTime.getDay()+"日"+orderTime.getHour()+"时"+orderTime.getMinute()+"分";
@@ -42,8 +44,12 @@ public class MemberOrderInfo {
         return price;
     }
 
-    public String getFirstFood() {
-        return firstFood;
+    public String getRestaurantPicture() {
+        return restaurantPicture;
+    }
+
+    public String getRestaurantPhone() {
+        return restaurantPhone;
     }
 
     public String getState() {

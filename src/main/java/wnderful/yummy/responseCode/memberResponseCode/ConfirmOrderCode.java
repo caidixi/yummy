@@ -1,7 +1,7 @@
 package wnderful.yummy.responseCode.memberResponseCode;
 
 public enum ConfirmOrderCode {
-    SUCCESS(0,"取消订单成功"),
+    SUCCESS(0,"确认订单成功"),
     NOTEXIST(1,"用户不存在"),
     CANCEL(2,"用户已注销"),
     FAIL(3,"订单不可确认（已取消/未支付或已确认）");

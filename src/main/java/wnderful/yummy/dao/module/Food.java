@@ -7,16 +7,15 @@ import java.util.List;
 @Entity
 public class Food {
     @Id
-    @GeneratedValue
-    private Long fid;
+    private String fid;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
     private String name;
 
     @Column(nullable = false)
     private int number;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
     private String announcement;
 
     @Column(nullable = false)
@@ -25,14 +24,12 @@ public class Food {
     @Column(nullable = false)
     private double packagePrice;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
     private String picture;
 
-    @Column(nullable = false)
-    private double discount;
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
+    private String type;
 
-    @Column(nullable = false)
-    private int discountLimit;
 
     @OneToMany(mappedBy  = "food",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<OrderItem> orderItemList;
@@ -48,17 +45,17 @@ public class Food {
     public Food() {
     }
 
-    public Food(String name, int number, String announcement, double price, double packagePrice, String picture,
-                double discount, int discountLimit, FoodState foodState, Restaurant restaurant) {
+    public Food(String fid,String name, int number, String announcement, double price, double packagePrice, String picture, String type,
+                FoodState foodState, Restaurant restaurant) {
+        this.fid = fid;
         this.name = name;
         this.number = number;
         this.announcement = announcement;
         this.price = price;
         this.packagePrice = packagePrice;
-        this.discount = discount;
-        this.discountLimit = discountLimit;
         this.foodState = foodState;
         this.restaurant = restaurant;
+        this.type = type;
         if(picture!=null){
             this.picture = picture;
         }else {
@@ -68,11 +65,7 @@ public class Food {
     }
 
     public String getFid() {
-        if(fid!=null){
-            return Long.toString(fid);
-    }else {
-            return "";
-        }
+       return fid;
     }
 
     public String getName() {
@@ -95,12 +88,9 @@ public class Food {
         return picture;
     }
 
-    public double getDiscount() {
-        return discount;
-    }
 
-    public int getDiscountLimit() {
-        return discountLimit;
+    public String getType() {
+        return type;
     }
 
     public List<OrderItem> getOrderItemList() {
@@ -143,13 +133,6 @@ public class Food {
         }
     }
 
-    public void setDiscount(double discount) {
-        this.discount = discount;
-    }
-
-    public void setDiscountLimit(int discountLimit) {
-        this.discountLimit = discountLimit;
-    }
 
     public void setFoodState(FoodState foodState) {
         this.foodState = foodState;
@@ -157,5 +140,9 @@ public class Food {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

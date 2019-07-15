@@ -12,6 +12,7 @@ import wnderful.yummy.util.JWTHelper;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -47,22 +48,37 @@ public class LoginFilter implements Filter {
         response.setContentType("application/json; charset=utf-8");
         boolean loginSuccess = false;
 
-        String token = request.getHeader("token");
+        String token = "";
+        Cookie[] cookies = request.getCookies();
+        if (cookies!=null){
+            //System.out.println("has cookies");
+            for(Cookie cookie:cookies){
+                if(cookie.getName().equals("token")){
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        //System.out.println("token: "+token);
+
         String[] names = request.getRequestURI().split("/");
         String type = names[2];
         //System.out.println(type);
 
-
         try{
             String[] tokenInfo = jwtHelper.verifyToken(token);
-            if(type.equals("member")){
-                loginSuccess = memberDataService.verifyPassword(tokenInfo[0],tokenInfo[1]);
-            }
-            if(type.equals("restaurant")){
-                loginSuccess = restaurantDataService.verifyPassword(tokenInfo[0],tokenInfo[1]);
-            }
-            if(type.equals("manager")){
-                loginSuccess = managerDataService.verifyPassword(tokenInfo[0],tokenInfo[1]);
+            String username = tokenInfo[0];
+            String myType = tokenInfo[1];
+            if(type.equals(myType)){
+                if(type.equals("member")){
+                    loginSuccess = memberDataService.memberPhoneExist(username);
+                }
+                if(type.equals("restaurant")){
+                    loginSuccess = restaurantDataService.restaurantRidExist(username);
+                }
+                if(type.equals("manager")){
+                    loginSuccess = managerDataService.managerEmailExist(username);
+                }
             }
         }catch (Exception ex){
             ex.printStackTrace();

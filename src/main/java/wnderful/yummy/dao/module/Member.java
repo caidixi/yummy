@@ -12,17 +12,14 @@ public class Member {
     @GeneratedValue
     private Long uid;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,unique = true,columnDefinition = "varchar(255) character set utf8mb4")
     private String name;
+
+    @Column(nullable = false,unique = true)
+    private String phone;
 
     @Column(nullable = false)
     private String password;
-
-    @Column(nullable = false)
-    private String phone;
-
-    @Column(nullable = false,unique = true)
-    private String email;
 
     @Column(nullable = false)
     private int xp;
@@ -30,30 +27,36 @@ public class Member {
     @Column(nullable = false)
     private int level;
 
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
+    private String avatar;
+
     @ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},optional=false)
     @JoinColumn(name = "memberState_name")
     private MemberState memberState;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_addressId",referencedColumnName = "addressId")
-    private Address address;
+    @OneToMany(mappedBy  = "member",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Address> address;
 
     @OneToMany(mappedBy  = "member",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Order> orderList;
 
+    @OneToMany(mappedBy  = "member",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<RestaurantCollection> collections;
+
     public Member() {
     }
 
-    public Member(String name, String password, String phone, String email, MemberState memberState, Address address) {
-        this.name = name;
+    public Member(String phone, String password,String name,String avatar,MemberState memberState) {
         this.password = password;
         this.phone = phone;
-        this.email = email;
+        this.name = name;
+        this.avatar = avatar;
+        this.memberState = memberState;
         this.xp = 0;
         this.level = 0;
-        this.memberState = memberState;
-        this.address = address;
+        address = new ArrayList<>();
         orderList = new ArrayList<>();
+        collections = new ArrayList<>();
     }
 
     public String getName() {
@@ -62,10 +65,6 @@ public class Member {
 
     public String getPhone() {
         return phone;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public int getXp() {
@@ -84,8 +83,12 @@ public class Member {
         return password;
     }
 
-    public Address getAddress() {
+    public List<Address> getAddress() {
         return address;
+    }
+
+    public List<RestaurantCollection> getCollections() {
+        return collections;
     }
 
     public String getUid() {
@@ -94,6 +97,10 @@ public class Member {
         }else {
             return "";
         }
+    }
+
+    public String getAvatar() {
+        return avatar;
     }
 
     public List<Order> getOrderList() {
@@ -108,10 +115,6 @@ public class Member {
         this.phone = phone;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -123,5 +126,9 @@ public class Member {
     public void addXp(int xp){
         this.xp = this.xp+xp;
         level = PriceHelper.getMemberLevel(this.xp);
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

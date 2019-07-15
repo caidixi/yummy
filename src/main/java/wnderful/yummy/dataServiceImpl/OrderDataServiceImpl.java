@@ -8,6 +8,7 @@ import wnderful.yummy.dataService.OrderDataService;
 import wnderful.yummy.entity.FoodOrder;
 import wnderful.yummy.entity.entityInModule.OrderStateName;
 import wnderful.yummy.entity.voEntity.*;
+import wnderful.yummy.util.LocationHelper;
 import wnderful.yummy.util.PriceHelper;
 import wnderful.yummy.util.TimeHelper;
 import wnderful.yummy.vo.memberVo.*;
@@ -30,12 +31,13 @@ public class OrderDataServiceImpl implements OrderDataService {
     private MemberRepository memberRepository;
     private RestaurantRepository restaurantRepository;
     private FoodRepository foodRepository;
+    private AddressRepository addressRepository;
 
     @Autowired
     public OrderDataServiceImpl(OrderRepository orderRepository, OrderStateDataServiceImpl orderStateDataService,
                                 FoodStateDataServiceImpl foodStateDataService,AccountDataServiceImpl accountDataService, MemberRepository memberRepository,
                                 RestaurantRepository restaurantRepository, FoodRepository foodRepository,
-                                RestaurantStateDataServiceImpl restaurantStateDataService,MemberStateDataServiceImpl memberStateDataService) {
+                                RestaurantStateDataServiceImpl restaurantStateDataService,MemberStateDataServiceImpl memberStateDataService,AddressRepository addressRepository) {
         this.orderRepository = orderRepository;
         this.orderStateDataService = orderStateDataService;
         this.foodStateDataService = foodStateDataService;
@@ -45,6 +47,7 @@ public class OrderDataServiceImpl implements OrderDataService {
         this.restaurantRepository = restaurantRepository;
         this.foodRepository = foodRepository;
         this.memberStateDataService = memberStateDataService;
+        this.addressRepository = addressRepository;
     }
 
     @Override
@@ -83,6 +86,15 @@ public class OrderDataServiceImpl implements OrderDataService {
     }
 
     @Override
+    public void evaluateOrder(String oid, int point) {
+        Order order = orderRepository.findByOidAndOrderState(Long.parseLong(oid),orderStateDataService.getDoneOrderState());
+        assert order!=null;
+        order.setEvaluatePoint(point);
+        order.setOrderState(orderStateDataService.getAssessedOrderState());
+        orderRepository.save(order);
+    }
+
+    @Override
     public boolean orderIsOvertime(String oid) {
         Order order = orderRepository.findByOidAndOrderState(Long.parseLong(oid),orderStateDataService.getUnpaidOrderState());
         assert order!=null;
@@ -102,55 +114,81 @@ public class OrderDataServiceImpl implements OrderDataService {
     }
 
     @Override
+    public boolean orderIsDone(String oid) {
+        return orderRepository.findByOidAndOrderState(Long.parseLong(oid),orderStateDataService.getDoneOrderState())!=null;
+    }
+
+    @Override
+    public boolean orderIsFromMember(String oid, String uid) {
+        Order order =  orderRepository.findByOid(Long.parseLong(oid));
+        assert order!=null;
+        return order.getMember().getUid().equals(uid);
+    }
+
+    @Override
     public boolean orderExist(String oid) {
         return orderRepository.findByOid(Long.parseLong(oid))!=null;
     }
 
 
     @Override
-    public MakeOrderVo makeOrder(String uid, String rid, String address, int numberOfDinner, String remark, FoodOrder[] foodOrders) {
+    public String  makeOrder(String uid, String rid, String addressId, int numberOfDinner, String remark,double totalPrice, FoodOrder[] foodOrders) {
         Restaurant restaurant = restaurantRepository.findRestaurantByRid(rid);
         Member member = memberRepository.findMemberByUid(Long.parseLong(uid));
+        Address address = addressRepository.findByAddressId(Long.parseLong(addressId));
         assert restaurant!=null&&member!=null;
-        Order order = new Order(TimeHelper.getInstanceTime(),address,remark,numberOfDinner,member,restaurant,orderStateDataService.getUnpaidOrderState());
+        int deliveryTime =LocationHelper.getArriveTime(address,restaurant);
+
+        Order order = new Order(TimeHelper.getInstanceTime(),address,remark,numberOfDinner,member,restaurant,deliveryTime,orderStateDataService.getUnpaidOrderState());
+
+        double trueTotalPrice = restaurant.getDeliverPrice();
         for(FoodOrder foodOrder:foodOrders){
-            Food food = foodRepository.findByFidAndFoodState(Long.parseLong(foodOrder.getFid()),foodStateDataService.getNormalFoodState());
-            assert food!=null;
-            OrderItem orderItem = new OrderItem(food.getName(),foodOrder.getNumber(),food.getPrice(),food.getPackagePrice(),food.getDiscount(),food.getDiscountLimit(),food,order);
+            Food food = foodRepository.findByFidAndFoodState(foodOrder.getFid(),foodStateDataService.getNormalFoodState());
+            trueTotalPrice += (food.getPrice()+food.getPackagePrice())*foodOrder.getNumber();
+        }
+        if(trueTotalPrice!=totalPrice){
+            return "";
+        }
+
+        for(FoodOrder foodOrder:foodOrders){
+            Food food = foodRepository.findByFidAndFoodState(foodOrder.getFid(),foodStateDataService.getNormalFoodState());
+            assert food!=null&&food.getNumber()>=foodOrder.getNumber();
+            OrderItem orderItem = new OrderItem(food.getName(),foodOrder.getNumber(),food.getPrice(),food.getPackagePrice(),food,order);
             order.addOrderItem(orderItem);
             food.setNumber(food.getNumber()-orderItem.getNumber());
             foodRepository.save(food);
         }
-        orderRepository.save(order);
-        Order newOrder = orderRepository.findOidByTime(order.getTime());
-        return new MakeOrderVo(newOrder.getOid(),order.getTotalPrice(),order.getPackagePrice(),order.getDeliveryPrice());
+        return orderRepository.saveAndFlush(order).getOid();
     }
 
     @Override
     public GetOrderDetailVo getOrderDetail(String oid) {
         Order order = orderRepository.findByOid(Long.parseLong(oid));
+        Restaurant restaurant = order.getRestaurant();
         List<OrderItem> orderItems = order.getOrderItemList();
-        FoodInfo[] FoodInfoList = new FoodInfo[orderItems.size()];
+        FoodInfo[] foodInfos = new FoodInfo[orderItems.size()];
         for(int i = 0;i<orderItems.size();i++){
             OrderItem orderItem = orderItems.get(i);
-            FoodInfoList[i] = new FoodInfo(orderItem.getFoodName(),orderItem.getPrice(),orderItem.getDiscount(),orderItem.getNumber(),orderItem.getDiscountLimit());
+            foodInfos[i] = new FoodInfo(orderItem.getFoodName(),orderItem.getPrice(),orderItem.getNumber());
         }
-        return new GetOrderDetailVo(oid,order.getOrderStateName(),order.getTime(),order.getRestaurantRid(),
-                order.getTotalPrice(),order.getPackagePrice(),order.getDeliveryPrice(),FoodInfoList);
+        return new GetOrderDetailVo(restaurant.getRid(),restaurant.getName(),restaurant.getPicture(),restaurant.getPhone(),
+                order.getOid(),order.getTime(),order.getTotalPrice(),order.getPackagePrice(),order.getDeliveryPrice(),order.getOrderStateName(),order.getRemark(),
+                order.getNumberOfDinner(),TimeHelper.getProbablyArriveTime(order.getDeliveryTime()),order.getName(),order.getPhone(),order.getLocation(),order.getDetailAddress(),foodInfos);
     }
 
     @Override
     public MemGetOrderListVo getMemOrderList(String uid) {
         Member member = memberRepository.findMemberByUid(Long.parseLong(uid));
-        List<Order> orders = member.getOrderList();
+        List<Order> orders = orderRepository.findByMemberOrderByOrderTimeDesc(member);
         MemberOrderInfo[] memberOrderInfoList = new MemberOrderInfo[orders.size()];
         for(int i = 0;i < orders.size();i++){
             Order order = orders.get(i);
+            Restaurant restaurant = order.getRestaurant();
             if(order.getOrderStateName().equals(OrderStateName.UNPAID.getStateName())&&orderIsOvertime(order.getOid())){
                 order.setOrderState(orderStateDataService.getCancelOrderState());
                 orderRepository.save(order);
             }
-            memberOrderInfoList[i] = new MemberOrderInfo(order.getRestaurantRid(),order.getRestaurantName(),order.getOid(),order.getTime(),order.getTotalPrice(),order.getFirstFoodName(),order.getOrderStateName());
+            memberOrderInfoList[i] = new MemberOrderInfo(restaurant.getRid(),restaurant.getName(),restaurant.getPicture(),restaurant.getPhone(),order.getOid(),order.getTime(),order.getTotalPrice(),order.getOrderStateName());
         }
         return new MemGetOrderListVo(memberOrderInfoList);
     }
@@ -180,14 +218,14 @@ public class OrderDataServiceImpl implements OrderDataService {
         int mouth = TimeHelper.getMouth();
         MemberStatisticByTime[] memberStatisticByTimes = new MemberStatisticByTime[12];
         for(int i = 0;i < 12;i++){
-            if(mouth<=i){
-                year = year-1;
-                mouth = mouth+12-i;
-            }else {
-                mouth = mouth-i;
-            }
             List<Order> orderList = orderRepository.findByOrderStateAndYearAndMonthAndMember(orderStateDataService.getDoneOrderState(),year,mouth,member);
             memberStatisticByTimes[i] = new MemberStatisticByTime(year,mouth,orderList.size(),getOrdersTotalPrice(orderList),getOrdersAveragePrice(orderList));
+            if(mouth==1){
+                year = year-1;
+                mouth = 12;
+            }else {
+                mouth = mouth-1;
+            }
         }
         return new MemDetailByTimeVo(uid,member.getName(),memberStatisticByTimes);
     }

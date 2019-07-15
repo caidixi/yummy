@@ -9,7 +9,7 @@ public class RestaurantType {
     @GeneratedValue
     private Long typeId;
 
-    @Column(nullable = false,unique = true,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,unique = true,columnDefinition = "varchar(255) character set utf8mb4")
     private String name;
 
     @OneToMany(mappedBy  = "restaurantType",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -24,5 +24,9 @@ public class RestaurantType {
 
     public String getName() {
         return name;
+    }
+
+    public Long getTypeId() {
+        return typeId;
     }
 }

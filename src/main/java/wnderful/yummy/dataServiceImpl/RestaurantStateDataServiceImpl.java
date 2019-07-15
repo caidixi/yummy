@@ -14,13 +14,16 @@ public class RestaurantStateDataServiceImpl implements RestaurantStateDataServic
     @Autowired
     public RestaurantStateDataServiceImpl(RestaurantStateRepository restaurantStateRepository) {
         this.restaurantStateRepository = restaurantStateRepository;
-        if(restaurantStateRepository.findAll().size()==0){
-            restaurantStateRepository.save(new RestaurantState(RestaurantStateName.FAIL.getStateName()));
-            restaurantStateRepository.save(new RestaurantState(RestaurantStateName.EXAMINE.getStateName()));
-            restaurantStateRepository.save(new RestaurantState(RestaurantStateName.NORMAL.getStateName()));
-        }
     }
 
+
+    public void initialize(){
+        if(restaurantStateRepository.findAll().size()==0){
+            restaurantStateRepository.saveAndFlush(new RestaurantState(RestaurantStateName.FAIL.getStateName()));
+            restaurantStateRepository.saveAndFlush(new RestaurantState(RestaurantStateName.EXAMINE.getStateName()));
+            restaurantStateRepository.saveAndFlush(new RestaurantState(RestaurantStateName.NORMAL.getStateName()));
+        }
+    }
 
     @Override
     public RestaurantState getNormalRestState() {

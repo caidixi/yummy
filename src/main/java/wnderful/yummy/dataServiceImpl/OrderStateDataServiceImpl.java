@@ -14,12 +14,6 @@ public class OrderStateDataServiceImpl implements OrderStateDataService {
     @Autowired
     public OrderStateDataServiceImpl(OrderStateRepository repository) {
         this.repository = repository;
-        if(repository.findAll().size()==0){
-            repository.save(new OrderState(OrderStateName.DONE.getStateName()));
-            repository.save(new OrderState(OrderStateName.PAID.getStateName()));
-            repository.save(new OrderState(OrderStateName.CANCEL.getStateName()));
-            repository.save(new OrderState(OrderStateName.UNPAID.getStateName()));
-        }
     }
 
     @Override
@@ -40,5 +34,10 @@ public class OrderStateDataServiceImpl implements OrderStateDataService {
     @Override
     public OrderState getDoneOrderState() {
         return repository.findByName(OrderStateName.DONE.getStateName());
+    }
+
+    @Override
+    public OrderState getAssessedOrderState() {
+        return repository.findByName(OrderStateName.ASSESSED.getStateName());
     }
 }

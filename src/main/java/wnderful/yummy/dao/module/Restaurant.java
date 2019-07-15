@@ -9,7 +9,7 @@ public class Restaurant {
     @Id
     private String rid;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
     private String name;
 
     @Column(nullable = false,unique = true)
@@ -18,10 +18,25 @@ public class Restaurant {
     @Column(nullable = false)
     private String phone;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
     private String address;
 
-    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8")
+    @Column(nullable = false)
+    private double lng;
+
+    @Column(nullable = false)
+    private double lat;
+
+    @Column(nullable = false)
+    private double startingPrice;
+
+    @Column(nullable = false)
+    private double deliverPrice;
+
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
+    private String city;
+
+    @Column(nullable = false,columnDefinition = "varchar(255) character set utf8mb4")
     private String announcement;
 
     @Column(nullable = false)
@@ -32,9 +47,6 @@ public class Restaurant {
 
     @Column(nullable = false)
     private double totalDiscount;
-
-    @Column(nullable = false)
-    private String fullReduction;
 
     @Column(nullable = false)
     private String picture;
@@ -53,10 +65,14 @@ public class Restaurant {
     @OneToMany(mappedBy  = "restaurant",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Food> foodList;
 
+    @OneToMany(mappedBy  = "restaurant",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<RestaurantCollection> collections;
+
     public Restaurant() {
     }
 
-    public Restaurant(String rid, String name, String email, String phone, String address, String announcement, String password, String accountId, RestaurantType restaurantType, RestaurantState restaurantState) {
+    public Restaurant(String rid, String name, String email, String phone, String address,double lng,double lat,String city,
+                      String announcement, String password, String accountId,String picture, RestaurantType restaurantType, RestaurantState restaurantState) {
         this.rid = rid;
         this.name = name;
         this.email = email;
@@ -67,11 +83,16 @@ public class Restaurant {
         this.accountId = accountId;
         this.restaurantType = restaurantType;
         this.restaurantState = restaurantState;
+        this.lat = lat;
+        this.lng = lng;
+        this.city = city;
         totalDiscount = 1;
-        fullReduction = "";
-        picture = "";
+        this.picture = picture;
+        startingPrice = 20;
+        deliverPrice = 3;
         orderList = new ArrayList<>();
         foodList = new ArrayList<>();
+        collections = new ArrayList<>();
     }
 
     public String getName() {
@@ -118,20 +139,41 @@ public class Restaurant {
         return totalDiscount;
     }
 
+    public double getStartingPrice() {
+        return startingPrice;
+    }
+
     public String getAccountId() {
         return accountId;
     }
 
-    public String getFullReduction() {
-        return fullReduction;
-    }
-
-    public List<Order> getOrderList() {
-        return orderList;
+    public double getRestaurantPoint(){
+        List<Order> orderList = this.orderList;
+        double sum = 0;
+        int num = 0;
+        for(Order order:orderList){
+            if(order.getOrderStateName().equals("assessed")){
+                sum += order.getEvaluatePoint();
+                num++;
+            }
+        }
+        if(num==0){
+            return 3;
+        }else {
+            return 3 + (sum/num)*0.4;
+        }
     }
 
     public List<Food> getFoodList() {
         return foodList;
+    }
+
+    public List<RestaurantCollection> getCollections() {
+        return collections;
+    }
+
+    public double getDeliverPrice() {
+        return deliverPrice;
     }
 
     public void setRestaurantState(RestaurantState restaurantState) {
@@ -170,11 +212,32 @@ public class Restaurant {
         this.totalDiscount = totalDiscount;
     }
 
-    public void setFullReduction(String fullReduction) {
-        this.fullReduction = fullReduction;
-    }
-
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+
+    public double getLng() {
+        return lng;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public String getCity() {
+        return city;
     }
 }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 @Component
 public class FilterConfiguration {
 
+
     private final LoginFilter filter;
 
     @Autowired

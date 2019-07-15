@@ -23,13 +23,13 @@ public class FoodDataServiceImpl implements FoodDataService {
     public boolean foodExist(String fid) {
         //不包括被取消的食物
         FoodState foodState = foodStateDataService.getCancelFoodState();
-        return foodRepository.findByFidAndFoodStateNot(Long.parseLong(fid), foodState) != null;
+        return foodRepository.findByFidAndFoodStateNot(fid, foodState) != null;
     }
 
     @Override
     public boolean foodEnough(String fid, int number) {
         FoodState foodState = foodStateDataService.getNormalFoodState();
-        Food food = foodRepository.findByFidAndFoodState(Long.parseLong(fid), foodState);
+        Food food = foodRepository.findByFidAndFoodState(fid, foodState);
         if (food != null) {
             return food.getNumber() > number;
         } else {
@@ -39,9 +39,9 @@ public class FoodDataServiceImpl implements FoodDataService {
 
     @Override
     public void modFood(String fid, String newFoodName, String newAnnouncement, double newPrice, double newPackagePrice,
-                        int newNumber, String newPicture, double newDiscount, int newDiscountLimit) {
+                        int newNumber, String newPicture, String newType) {
         FoodState foodState = foodStateDataService.getCancelFoodState();
-        Food food = foodRepository.findByFidAndFoodStateNot(Long.parseLong(fid), foodState);
+        Food food = foodRepository.findByFidAndFoodStateNot(fid, foodState);
         assert food != null;
         food.setName(newFoodName);
         food.setAnnouncement(newAnnouncement);
@@ -49,15 +49,14 @@ public class FoodDataServiceImpl implements FoodDataService {
         food.setPackagePrice(newPackagePrice);
         food.setNumber(newNumber);
         food.setPicture(newPicture);
-        food.setDiscount(newDiscount);
-        food.setDiscountLimit(newDiscountLimit);
+        food.setType(newType);
         foodRepository.save(food);
     }
 
     @Override
     public void deleteFood(String fid) {
         FoodState foodState = foodStateDataService.getCancelFoodState();
-        Food food = foodRepository.findByFidAndFoodStateNot(Long.parseLong(fid), foodState);
+        Food food = foodRepository.findByFidAndFoodStateNot(fid, foodState);
         assert food != null;
         food.setFoodState(foodState);
         foodRepository.save(food);
@@ -66,8 +65,8 @@ public class FoodDataServiceImpl implements FoodDataService {
     @Override
     public FoodDetail getFoodDetail(String fid) {
         FoodState foodState = foodStateDataService.getCancelFoodState();
-        Food food = foodRepository.findByFidAndFoodStateNot(Long.parseLong(fid), foodState);
+        Food food = foodRepository.findByFidAndFoodStateNot(fid, foodState);
         assert food != null;
-        return new FoodDetail(food.getName(), fid, food.getAnnouncement(), food.getPicture(), food.getPrice(), food.getPackagePrice(), food.getDiscount(), food.getDiscountLimit(), food.getNumber());
+        return new FoodDetail(food.getName(), fid, food.getType(),food.getAnnouncement(),food.getPicture(),food.getPrice(),food.getPackagePrice(),food.getNumber());
     }
 }

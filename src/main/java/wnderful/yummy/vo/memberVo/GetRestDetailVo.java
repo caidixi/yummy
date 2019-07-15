@@ -1,36 +1,32 @@
 package wnderful.yummy.vo.memberVo;
 
-import wnderful.yummy.entity.FullReduction;
 import wnderful.yummy.entity.voEntity.FoodDetail;
 
 public class GetRestDetailVo {
     private String name;
+    private double point;
     private String picture;
-    private String rid;
+    private double startingPrice;
+    private double deliveryPrice;
+    private String phone;
     private String address;
     private String announcement;
-    private double totalDiscount;
-    private FullReduction[] fullReductions;
+    private double lng;
+    private double lat;
     private FoodDetail[] foods;
 
-    public GetRestDetailVo(String name, String picture, String rid, String address, String announcement, double totalDiscount, FullReduction[] fullReductions, FoodDetail[] foods) {
+    public GetRestDetailVo(String name, double point, String picture, double startingPrice, double deliveryPrice, String phone,
+                           String address, String announcement, double lng, double lat, FoodDetail[] foods) {
         this.name = name;
+        this.point = point;
         this.picture = picture;
-        this.rid = rid;
+        this.startingPrice = startingPrice;
+        this.deliveryPrice = deliveryPrice;
+        this.phone = phone;
         this.address = address;
         this.announcement = announcement;
-        this.totalDiscount = totalDiscount;
-        this.fullReductions = fullReductions;
-        this.foods = foods;
-    }
-
-    public GetRestDetailVo(String name, String picture, String rid, String address, String announcement, double totalDiscount, FoodDetail[] foods) {
-        this.name = name;
-        this.picture = picture;
-        this.rid = rid;
-        this.address = address;
-        this.announcement = announcement;
-        this.totalDiscount = totalDiscount;
+        this.lng = lng;
+        this.lat = lat;
         this.foods = foods;
     }
 
@@ -38,12 +34,24 @@ public class GetRestDetailVo {
         return name;
     }
 
+    public double getPoint() {
+        return point;
+    }
+
     public String getPicture() {
         return picture;
     }
 
-    public String getRid() {
-        return rid;
+    public double getStartingPrice() {
+        return startingPrice;
+    }
+
+    public double getDeliveryPrice() {
+        return deliveryPrice;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 
     public String getAddress() {
@@ -54,15 +62,15 @@ public class GetRestDetailVo {
         return announcement;
     }
 
+    public double getLng() {
+        return lng;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
     public FoodDetail[] getFoods() {
         return foods;
-    }
-
-    public double getTotalDiscount() {
-        return totalDiscount;
-    }
-
-    public FullReduction[] getFullReductions() {
-        return fullReductions;
     }
 }

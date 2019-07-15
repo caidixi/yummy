@@ -9,8 +9,7 @@ public class ModFoodReq {
     private double newPackagePrice;
     private int newNumber;
     private String picture;
-    private double newDiscount;
-    private int newDiscountLimit;
+    private String type;
 
     public ModFoodReq() {
     }
@@ -79,19 +78,11 @@ public class ModFoodReq {
         this.picture = picture;
     }
 
-    public double getNewDiscount() {
-        return newDiscount;
+    public String getType() {
+        return type;
     }
 
-    public void setNewDiscount(double newDiscount) {
-        this.newDiscount = newDiscount;
-    }
-
-    public int getNewDiscountLimit() {
-        return newDiscountLimit;
-    }
-
-    public void setNewDiscountLimit(int newDiscountLimit) {
-        this.newDiscountLimit = newDiscountLimit;
+    public void setType(String type) {
+        this.type = type;
     }
 }

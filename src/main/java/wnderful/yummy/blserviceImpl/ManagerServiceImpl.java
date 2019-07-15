@@ -7,7 +7,7 @@ import wnderful.yummy.dataServiceImpl.ManagerDataServiceImpl;
 import wnderful.yummy.dataServiceImpl.RestaurantDataServiceImpl;
 import wnderful.yummy.response.ManagerResponse.*;
 import wnderful.yummy.response.Response;
-import wnderful.yummy.responseCode.ManagerResponseCode.*;
+import wnderful.yummy.responseCode.managerResponseCode.*;
 import wnderful.yummy.vo.managerVo.*;
 
 @Service
